@@ -50,7 +50,7 @@ class Ui_ConfigureDialog(object):
         QtCore.QMetaObject.connectSlotsByName(ConfigureDialog)
 
     def retranslateUi(self, ConfigureDialog):
-        ConfigureDialog.setWindowTitle(QtGui.QApplication.translate("ConfigureDialog", "Configure - Zinc Model Source", None, QtGui.QApplication.UnicodeUTF8))
+        ConfigureDialog.setWindowTitle(QtGui.QApplication.translate("ConfigureDialog", "Configure - Femur Measurement", None, QtGui.QApplication.UnicodeUTF8))
         self.identifierLabel.setText(QtGui.QApplication.translate("ConfigureDialog", "Identifier:", None, QtGui.QApplication.UnicodeUTF8))
         self.verboseLabel.setText(QtGui.QApplication.translate("ConfigureDialog", "Verbose:", None, QtGui.QApplication.UnicodeUTF8))
 

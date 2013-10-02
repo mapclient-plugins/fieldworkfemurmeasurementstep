@@ -66,7 +66,7 @@ class ConfigureDialog(QDialog):
         else:
             self._ui.identifierLineEdit.setStyleSheet(REQUIRED_STYLE_SHEET)
 
-        valid = identifierValid and discretisationValid and renderArgsValid
+        valid = identifierValid
         self._ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(valid)
 
         return valid
