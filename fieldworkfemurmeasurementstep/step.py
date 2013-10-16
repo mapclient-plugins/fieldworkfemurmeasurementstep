@@ -29,6 +29,7 @@ sys.path.append('../../../../')
 from fieldworkfemurmeasurementstep.widgets.configuredialog import ConfigureDialog
 from fieldworkfemurmeasurementstep.fieldworkfemurmeasurementdata import StepState
 from utils import femur_measurements
+from fieldwork.field import geometric_field
 
 class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
     '''
@@ -40,8 +41,11 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         self._state = StepState()
         self._icon = QtGui.QImage(':/zincmodelsource/images/zinc_model_icon.png')   # change this
         self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#uses', 'ju#fieldworkmodel'))
-        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#provides', 'ju#fieldworkfemurmeasurement'))
+        # self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#provides', 'ju#fieldworkfemurmeasurement'))
+        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#provides', 'ju#fieldworkmodelandmeasurements'))
         self._widget = None
+        self.measurements = None
+        self.model = None
 
     def configure(self):
         d = ConfigureDialog(self._state)
@@ -82,18 +86,23 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         self._configured = d.validate()
  
     def execute(self, dataIn):
-
         if not isinstance(dataIn, geometric_field.geometric_field):
             raise TypeError, 'FieldViViewFieldworkModelStep expects a geometric_field as input'
 
-        m = femur_measurements.femurMeasurements( dataIn )
-        m.calcMeasurements()
+        self.model = dataIn
+        self.measurements = femur_measurements.femurMeasurements( self.model )
+        self.measurements.calcMeasurements()
         
-        if self._state._verbose:
-            m.printMeasurements()
+        # if self._state._verbose:
+        self.measurements.printMeasurements()
             
-        return m
+        # return m
+        print 'measurements done'
+        self._doneExecution()
+
+    def portOutput(self):
+        print 'outputting from FieldworkFemurMeasurementStep'
+        return {'measurements':self.measurements, 'model':self.model}
      
 def getConfigFilename(identifier):
     return identifier + '.conf'
-
