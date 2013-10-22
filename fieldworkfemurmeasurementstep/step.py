@@ -23,12 +23,12 @@ from PySide import QtCore, QtGui
 
 from mountpoints.workflowstep import WorkflowStepMountPoint
 
-import sys
-sys.path.append('../../../../')
+# import sys
+# sys.path.append('../../../../')
 
 from fieldworkfemurmeasurementstep.widgets.configuredialog import ConfigureDialog
 from fieldworkfemurmeasurementstep.fieldworkfemurmeasurementdata import StepState
-from utils import femur_measurements
+from workutils import femur_measurements
 from fieldwork.field import geometric_field
 
 class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
