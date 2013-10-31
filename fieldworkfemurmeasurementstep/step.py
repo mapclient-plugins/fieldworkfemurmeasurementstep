@@ -38,11 +38,17 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
     
     def __init__(self, location):
         super(FieldworkFemurMeasurementStep, self).__init__('Fieldwork Femur Measurements', location)
+        self._category = 'Fieldwork Measurements'
         self._state = StepState()
         self._icon = QtGui.QImage(':/zincmodelsource/images/zinc_model_icon.png')   # change this
-        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#uses', 'ju#fieldworkmodel'))
+        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                      'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
+                      'ju#fieldworkmodel'))
         # self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#provides', 'ju#fieldworkfemurmeasurement'))
-        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#provides', 'ju#fieldworkmodelandmeasurements'))
+        self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
+                      'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
+                      'ju#fieldworkmeasurementdict'))
+
         self._widget = None
         self.measurements = None
         self.model = None
@@ -57,6 +63,28 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         self._configured = d.validate()
         if self._configured and self._configuredObserver:
             self._configuredObserver()
+
+    def execute(self):
+
+        self.measurements = femur_measurements.femurMeasurements( self.model )
+        self.measurements.calcMeasurements()
+        
+        # if self._state._verbose:
+        self.measurements.printMeasurements()
+            
+        # return m
+        print 'measurements done'
+        self._doneExecution()
+
+    def setPortData(self, index, dataIn):
+        if not isinstance(dataIn, geometric_field.geometric_field):
+            raise TypeError, 'FieldViViewFieldworkModelStep expects a geometric_field as input'
+        
+        self.model = dataIn
+
+    def getPortData(self, index):
+        print 'outputting from FieldworkFemurMeasurementStep'
+        return {'femur':self.measurements}
     
     def getIdentifier(self):
         return self._state._identifier
@@ -84,25 +112,6 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         s.endGroup()
         d = ConfigureDialog(self._state)
         self._configured = d.validate()
- 
-    def execute(self, dataIn):
-        if not isinstance(dataIn, geometric_field.geometric_field):
-            raise TypeError, 'FieldViViewFieldworkModelStep expects a geometric_field as input'
-
-        self.model = dataIn
-        self.measurements = femur_measurements.femurMeasurements( self.model )
-        self.measurements.calcMeasurements()
-        
-        # if self._state._verbose:
-        self.measurements.printMeasurements()
-            
-        # return m
-        print 'measurements done'
-        self._doneExecution()
-
-    def portOutput(self):
-        print 'outputting from FieldworkFemurMeasurementStep'
-        return {'measurements':self.measurements, 'model':self.model}
      
 def getConfigFilename(identifier):
     return identifier + '.conf'
