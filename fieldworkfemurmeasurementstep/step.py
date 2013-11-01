@@ -84,7 +84,7 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
 
     def getPortData(self, index):
         print 'outputting from FieldworkFemurMeasurementStep'
-        return {'femur':self.measurements}
+        return {'femur measurements':self.measurements}
     
     def getIdentifier(self):
         return self._state._identifier
