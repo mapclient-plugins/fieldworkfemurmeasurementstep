@@ -29,7 +29,7 @@ if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
 # import class that derives itself from the step mountpoint.
-import fieldworkfemurmeasurementstep.widgets.resources_rc
+# import fieldworkfemurmeasurementstep.widgets.resources_rc
 from fieldworkfemurmeasurementstep import step
 
 ( _, tail ) = os.path.split(current_dir)
