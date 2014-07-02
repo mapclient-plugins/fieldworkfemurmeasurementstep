@@ -21,8 +21,8 @@ import os
 
 from PySide.QtGui import QDialog, QFileDialog, QDialogButtonBox
 
-from fieldworkfemurmeasurementstep.widgets.ui_configuredialog import Ui_ConfigureDialog
-from fieldworkfemurmeasurementstep.fieldworkfemurmeasurementdata import StepState
+from mapclientplugins.fieldworkfemurmeasurementstep.widgets.ui_configuredialog import Ui_ConfigureDialog
+from mapclientplugins.fieldworkfemurmeasurementstep.fieldworkfemurmeasurementdata import StepState
 
 REQUIRED_STYLE_SHEET = 'border: 1px solid red; border-radius: 3px'
 DEFAULT_STYLE_SHEET = ''
