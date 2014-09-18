@@ -23,12 +23,9 @@ from PySide import QtCore, QtGui
 
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
 
-# import sys
-# sys.path.append('../../../../')
-
 from mapclientplugins.fieldworkfemurmeasurementstep.widgets.configuredialog import ConfigureDialog
 from mapclientplugins.fieldworkfemurmeasurementstep.fieldworkfemurmeasurementdata import StepState
-from workutils import femur_measurements
+from gias.musculoskeletal import fw_femur_measurements
 from fieldwork.field import geometric_field
 
 class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
