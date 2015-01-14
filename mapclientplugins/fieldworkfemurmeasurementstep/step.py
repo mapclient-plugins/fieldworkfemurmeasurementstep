@@ -70,17 +70,17 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         self.measurements.printMeasurements()
             
         # return m
-        print 'measurements done'
+        print('measurements done')
         self._doneExecution()
 
     def setPortData(self, index, dataIn):
         if not isinstance(dataIn, geometric_field.geometric_field):
-            raise TypeError, 'FieldViViewFieldworkModelStep expects a geometric_field as input'
+            raise TypeError('FieldViViewFieldworkModelStep expects a geometric_field as input')
         
         self.model = dataIn
 
     def getPortData(self, index):
-        print 'outputting from FieldworkFemurMeasurementStep'
+        print('outputting from FieldworkFemurMeasurementStep')
         return {'femur measurements':self.measurements}
     
     def getIdentifier(self):
