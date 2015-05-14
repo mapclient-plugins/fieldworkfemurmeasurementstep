@@ -63,7 +63,7 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
 
     def execute(self):
 
-        self.measurements = femur_measurements.FemurMeasurements( self.model )
+        self.measurements = fw_femur_measurements.FemurMeasurements( self.model )
         self.measurements.calcMeasurements()
         
         # if self._state._verbose:
