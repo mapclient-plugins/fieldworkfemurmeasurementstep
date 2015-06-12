@@ -17,6 +17,7 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
     You should have received a copy of the GNU General Public License
     along with MAP Client.  If not, see <http://www.gnu.org/licenses/>..
 '''
+import json
 
 class StepState(object):
     '''
@@ -27,4 +28,10 @@ class StepState(object):
     def __init__(self):
         self._identifier = ''
         self._verbose = True
+        
+    def serialize(self):
+        return json.dumps(self.__dict__)
     
+    def deserialize(self, str_rep):
+        self.__dict__.update(json.loads(str_rep))
+

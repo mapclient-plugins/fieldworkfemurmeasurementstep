@@ -70,3 +70,4 @@ class ConfigureDialog(QDialog):
         self._ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(valid)
 
         return valid
+
