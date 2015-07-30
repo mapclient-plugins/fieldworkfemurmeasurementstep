@@ -35,7 +35,7 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
     
     def __init__(self, location):
         super(FieldworkFemurMeasurementStep, self).__init__('Fieldwork Femur Measurements', location)
-        self._category = 'Fieldwork Measurements'
+        self._category = 'Anthropmetry'
         self._state = StepState()
         # self._icon = QtGui.QImage(':/zincmodelsource/images/zinc_model_icon.png')   # change this
         self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
