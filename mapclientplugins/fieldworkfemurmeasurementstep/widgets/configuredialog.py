@@ -32,32 +32,45 @@ class ConfigureDialog(QDialog):
     Configure dialog to present the user with the options to configure this step.
     '''
 
-    def __init__(self, state, parent=None):
-        '''
+    def __init__(self, parent=None):
+'''
         Constructor
         '''
-        QDialog.__init__(self, parent)
-        self._ui = Ui_ConfigureDialog()
-        self._ui.setupUi(self)
+        QtGui.QDialog.__init__(self, parent)
         
-        self.setState(state)
-        self.validate()
+        self._ui = Ui_Dialog()
+        self._ui.setupUi(self)
+
+        # Keep track of the previous identifier so that we can track changes
+        # and know how many occurrences of the current identifier there should
+        # be.
+        self._previousIdentifier = ''
+
+        # Set a place holder for a callable that will get set from the step.
+        # We will use this method to decide whether the identifier is unique.
+        self.identifierOccursCount = None
+
         self._makeConnections()
         
     def _makeConnections(self):
         self._ui.identifierLineEdit.textChanged.connect(self.validate)
       
-    
-    def setState(self, state):
-        self._ui.identifierLineEdit.setText(state._identifier)
-        self._ui.verboseCheckBox.setChecked(state._verbose)
-    
-    def getState(self):
-        state = StepState()
-        state._identifier = self._ui.identifierLineEdit.text()
-        state._verbose = self._ui.verboseCheckBox.isChecked()
-        
-        return state
+    def setConfig(self, config):
+        self._previousIdentifier = config['identifier']
+        self._ui.identifierLineEdit.setText(config['identifier'])
+        self._ui.verboseCheckBox.setChecked(config['verbose'])
+
+    def getConfig(self):
+        '''
+        Get the current value of the configuration from the dialog.  Also
+        set the _previousIdentifier value so that we can check uniqueness of the
+        identifier over the whole of the workflow.
+        '''
+        self._previousIdentifier = self._ui.identifierLineEdit.text()
+        config = {}
+        config['identifier'] = self._ui.identifierLineEdit.text()
+        config['verbose'] = self._ui.verboseCheckBox.isChecked:
+        return config
         
     def validate(self):
         identifierValid = len(self._ui.identifierLineEdit.text()) > 0

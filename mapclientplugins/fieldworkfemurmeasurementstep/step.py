@@ -18,13 +18,13 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
     along with MAP Client.  If not, see <http://www.gnu.org/licenses/>..
 '''
 import os
+import json
 
-from PySide import QtCore, QtGui
+from PySide import QtGui
 
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
 
 from mapclientplugins.fieldworkfemurmeasurementstep.widgets.configuredialog import ConfigureDialog
-from mapclientplugins.fieldworkfemurmeasurementstep.fieldworkfemurmeasurementdata import StepState
 from gias.musculoskeletal import fw_femur_measurements
 from fieldwork.field import geometric_field
 
@@ -36,7 +36,6 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
     def __init__(self, location):
         super(FieldworkFemurMeasurementStep, self).__init__('Fieldwork Femur Measurements', location)
         self._category = 'Anthropometry'
-        self._state = StepState()
         # self._icon = QtGui.QImage(':/zincmodelsource/images/zinc_model_icon.png')   # change this
         self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
@@ -49,25 +48,31 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         self._widget = None
         self.measurements = None
         self.model = None
+        self._config = {}
+        self._config['identifier'] = ''
+        self._config['verbose'] = True
 
     def configure(self):
-        d = ConfigureDialog(self._state)
-        d.setModal(True)
-        if d.exec_():
-            self._state = d.getState()
-            self.serialize(self._location)
-            
-        self._configured = d.validate()
-        if self._configured and self._configuredObserver:
-            self._configuredObserver()
+
+        dlg = ConfigureDialog()
+        dlg.identifierOccursCount = self._identifierOccursCount
+        dlg.setConfig(self._config)
+        dlg.validate()
+        dlg.setModal(True)
+        
+        if dlg.exec_():
+            self._config = dlg.getConfig()
+        
+        self._configured = dlg.validate()
+        self._configuredObserver()
 
     def execute(self):
 
         self.measurements = fw_femur_measurements.FemurMeasurements( self.model )
         self.measurements.calcMeasurements()
         
-        # if self._state._verbose:
-        self.measurements.printMeasurements()
+        if self._config['verbose']:
+            self.measurements.printMeasurements()
             
         # return m
         print('measurements done')
@@ -84,31 +89,27 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         return {'femur measurements':self.measurements}
     
     def getIdentifier(self):
-        return self._state._identifier
+        return self._config['identifier']
      
     def setIdentifier(self, identifier):
-        self._state._identifier = identifier
+        self._config['identifier'] = identifier
      
-    def serialize(self, location):
-        configuration_file = os.path.join(location, getConfigFilename(self._state._identifier))
-        s = QtCore.QSettings(configuration_file, QtCore.QSettings.IniFormat)
-        s.beginGroup('state')
-        s.setValue('identifier', self._state._identifier)
-        s.setValue('verbose', self._state._verbose)
-        s.endGroup()
-     
-    def deserialize(self, location):
-        configuration_file = os.path.join(location, getConfigFilename(self._state._identifier))
-        s = QtCore.QSettings(configuration_file, QtCore.QSettings.IniFormat)
-        s.beginGroup('state')
-        self._state._identifier = s.value('identifier', '')
-        if s.value('verbose', '')=='True':
-            self._state._verbose = True
-        else:
-            self._state._verbose = False
-        s.endGroup()
-        d = ConfigureDialog(self._state)
+    def serialize(self):
+        '''
+        Add code to serialize this step to disk. Returns a json string for
+        mapclient to serialise.
+        '''
+        return json.dumps(self._config, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
+    def deserialize(self, string):
+        '''
+        Add code to deserialize this step from disk. Parses a json string
+        given by mapclient
+        '''
+        self._config.update(json.loads(string))
+
+        d = ConfigureDialog()
+        d.identifierOccursCount = self._identifierOccursCount
+        d.setConfig(self._config)
         self._configured = d.validate()
-     
-def getConfigFilename(identifier):
-    return identifier + '.conf'
+
