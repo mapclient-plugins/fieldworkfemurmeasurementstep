@@ -25,8 +25,8 @@ from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
 
 from mapclientplugins.fieldworkfemurmeasurementstep.widgets.configuredialog import ConfigureDialog
 from mapclientplugins.fieldworkfemurmeasurementstep.fieldworkfemurmeasurementdata import StepState
-from gias.musculoskeletal import fw_femur_measurements
-from fieldwork.field import geometric_field
+from gias2.musculoskeletal import fw_femur_measurements
+from gias2.fieldwork.field import geometric_field
 
 class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
     '''
