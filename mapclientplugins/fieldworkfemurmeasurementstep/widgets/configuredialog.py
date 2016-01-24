@@ -33,7 +33,7 @@ class ConfigureDialog(QDialog):
     '''
 
     def __init__(self, parent=None):
-'''
+        '''
         Constructor
         '''
         QtGui.QDialog.__init__(self, parent)
