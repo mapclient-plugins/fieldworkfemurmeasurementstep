@@ -69,7 +69,7 @@ class ConfigureDialog(QDialog):
         self._previousIdentifier = self._ui.identifierLineEdit.text()
         config = {}
         config['identifier'] = self._ui.identifierLineEdit.text()
-        config['verbose'] = self._ui.verboseCheckBox.isChecked:
+        config['verbose'] = self._ui.verboseCheckBox.isChecked()
         return config
         
     def validate(self):
