@@ -17,12 +17,16 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
     You should have received a copy of the GNU General Public License
     along with MAP Client.  If not, see <http://www.gnu.org/licenses/>..
 '''
+from PySide import QtGui
+
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
 
 from mapclientplugins.fieldworkfemurmeasurementstep.widgets.configuredialog import ConfigureDialog
 from mapclientplugins.fieldworkfemurmeasurementstep.fieldworkfemurmeasurementdata import StepState
-from gias.musculoskeletal import fw_femur_measurements
-from fieldwork.field import geometric_field
+
+from gias2.musculoskeletal import fw_femur_measurements
+from gias2.fieldwork.field import geometric_field
+
 
 class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
     '''
@@ -47,7 +51,7 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         self.model = None
 
     def configure(self):
-        d = ConfigureDialog(self._state)
+        d = ConfigureDialog(self._state, QtGui.QApplication.activeWindow().currentWidget())
         d.setModal(True)
         if d.exec_():
             self._state = d.getState()
@@ -65,7 +69,6 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         self.measurements.printMeasurements()
             
         # return m
-        print('measurements done')
         self._doneExecution()
 
     def setPortData(self, index, dataIn):
@@ -75,8 +78,7 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         self.model = dataIn
 
     def getPortData(self, index):
-        print('outputting from FieldworkFemurMeasurementStep')
-        return {'femur measurements':self.measurements}
+        return {'femur measurements':self.measurements.getMeasurementsDict()}
     
     def getIdentifier(self):
         return self._state._identifier

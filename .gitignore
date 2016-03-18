@@ -4,3 +4,9 @@
 .project
 .pydevproject
 
+
+#PyCharm
+.idea/
+
+# OS X
+.DS_Store
