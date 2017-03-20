@@ -43,7 +43,7 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         # self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#provides', 'ju#fieldworkfemurmeasurement'))
         self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
                       'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
-                      'ju#fieldworkmeasurementdict'))
+                      'http://physiomeproject.org/workflow/1.0/rdf-schema#dict'))
 
         self._widget = None
         self.measurements = None
