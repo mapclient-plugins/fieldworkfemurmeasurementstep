@@ -36,7 +36,7 @@ class ConfigureDialog(QDialog):
         '''
         Constructor
         '''
-        QtGui.QDialog.__init__(self, parent)
+        QDialog.__init__(self, parent)
         
         self._ui = Ui_Dialog()
         self._ui.setupUi(self)
