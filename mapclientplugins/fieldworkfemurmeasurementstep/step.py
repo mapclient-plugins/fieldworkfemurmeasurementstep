@@ -20,8 +20,6 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
 import os
 import json
 
-from PySide import QtGui
-
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
 
 from mapclientplugins.fieldworkfemurmeasurementstep.widgets.configuredialog import ConfigureDialog
