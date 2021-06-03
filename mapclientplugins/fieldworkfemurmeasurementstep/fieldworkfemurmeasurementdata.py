@@ -18,13 +18,13 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
     along with MAP Client.  If not, see <http://www.gnu.org/licenses/>..
 '''
 
+
 class StepState(object):
     '''
     This class holds the step state, for use with serialization
     /deserialization.
     '''
-    
+
     def __init__(self):
         self._identifier = ''
         self._verbose = True
-    
