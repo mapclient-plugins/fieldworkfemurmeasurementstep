@@ -20,19 +20,18 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
 import os
 import json
 
-from PySide import QtGui
-
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
 
 from mapclientplugins.fieldworkfemurmeasurementstep.widgets.configuredialog import ConfigureDialog
 from gias2.musculoskeletal import fw_femur_measurements
 from gias2.fieldwork.field import geometric_field
 
+
 class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
     '''
     Take morphometric measurements on a fieldwork femur mesh
     '''
-    
+
     def __init__(self, location):
         super(FieldworkFemurMeasurementStep, self).__init__('Fieldwork Femur Measurements', location)
         self._category = 'Anthropometry'
@@ -54,26 +53,26 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
 
     def configure(self):
 
-        dlg = ConfigureDialog()
+        dlg = ConfigureDialog(self._main_window)
         dlg.identifierOccursCount = self._identifierOccursCount
         dlg.setConfig(self._config)
         dlg.validate()
         dlg.setModal(True)
-        
+
         if dlg.exec_():
             self._config = dlg.getConfig()
-        
+
         self._configured = dlg.validate()
         self._configuredObserver()
 
     def execute(self):
 
-        self.measurements = fw_femur_measurements.FemurMeasurements( self.model )
+        self.measurements = fw_femur_measurements.FemurMeasurements(self.model)
         self.measurements.calcMeasurements()
-        
+
         if self._config['verbose']:
             self.measurements.printMeasurements()
-            
+
         # return m
         print('measurements done')
         self._doneExecution()
@@ -81,19 +80,19 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
     def setPortData(self, index, dataIn):
         if not isinstance(dataIn, geometric_field.geometric_field):
             raise TypeError('FieldViViewFieldworkModelStep expects a geometric_field as input')
-        
+
         self.model = dataIn
 
     def getPortData(self, index):
         print('outputting from FieldworkFemurMeasurementStep')
-        return {'femur measurements':self.measurements}
-    
+        return {'femur measurements': self.measurements}
+
     def getIdentifier(self):
         return self._config['identifier']
-     
+
     def setIdentifier(self, identifier):
         self._config['identifier'] = identifier
-     
+
     def serialize(self):
         '''
         Add code to serialize this step to disk. Returns a json string for

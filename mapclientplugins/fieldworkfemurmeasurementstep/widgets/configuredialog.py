@@ -19,13 +19,14 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
 '''
 import os
 
-from PySide.QtGui import QDialog, QFileDialog, QDialogButtonBox
+from PySide2.QtWidgets import QDialog, QDialogButtonBox
 
 from mapclientplugins.fieldworkfemurmeasurementstep.widgets.ui_configuredialog import Ui_ConfigureDialog
 from mapclientplugins.fieldworkfemurmeasurementstep.fieldworkfemurmeasurementdata import StepState
 
 REQUIRED_STYLE_SHEET = 'border: 1px solid red; border-radius: 3px'
 DEFAULT_STYLE_SHEET = ''
+
 
 class ConfigureDialog(QDialog):
     '''
@@ -51,10 +52,10 @@ class ConfigureDialog(QDialog):
         self.identifierOccursCount = None
 
         self._makeConnections()
-        
+
     def _makeConnections(self):
         self._ui.identifierLineEdit.textChanged.connect(self.validate)
-      
+
     def setConfig(self, config):
         self._previousIdentifier = config['identifier']
         self._ui.identifierLineEdit.setText(config['identifier'])
@@ -71,7 +72,7 @@ class ConfigureDialog(QDialog):
         config['identifier'] = self._ui.identifierLineEdit.text()
         config['verbose'] = self._ui.verboseCheckBox.isChecked()
         return config
-        
+
     def validate(self):
         identifierValid = len(self._ui.identifierLineEdit.text()) > 0
         if identifierValid:
