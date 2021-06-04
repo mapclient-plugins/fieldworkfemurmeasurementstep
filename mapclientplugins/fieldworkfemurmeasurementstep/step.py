@@ -17,13 +17,12 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
     You should have received a copy of the GNU General Public License
     along with MAP Client.  If not, see <http://www.gnu.org/licenses/>..
 '''
-from PySide import QtGui
+import os
+import json
 
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
 
 from mapclientplugins.fieldworkfemurmeasurementstep.widgets.configuredialog import ConfigureDialog
-from mapclientplugins.fieldworkfemurmeasurementstep.fieldworkfemurmeasurementdata import StepState
-
 from gias2.musculoskeletal import fw_femur_measurements
 from gias2.fieldwork.field import geometric_field
 
@@ -32,11 +31,10 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
     '''
     Take morphometric measurements on a fieldwork femur mesh
     '''
-    
+
     def __init__(self, location):
         super(FieldworkFemurMeasurementStep, self).__init__('Fieldwork Femur Measurements', location)
-        self._category = 'Fieldwork Measurements'
-        self._state = StepState()
+        self._category = 'Anthropometry'
         # self._icon = QtGui.QImage(':/zincmodelsource/images/zinc_model_icon.png')   # change this
         self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
                       'http://physiomeproject.org/workflow/1.0/rdf-schema#uses',
@@ -44,62 +42,72 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         # self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port', 'http://physiomeproject.org/workflow/1.0/rdf-schema#provides', 'ju#fieldworkfemurmeasurement'))
         self.addPort(('http://physiomeproject.org/workflow/1.0/rdf-schema#port',
                       'http://physiomeproject.org/workflow/1.0/rdf-schema#provides',
-                      'ju#fieldworkmeasurementdict'))
+                      'http://physiomeproject.org/workflow/1.0/rdf-schema#dict'))
 
         self._widget = None
         self.measurements = None
         self.model = None
+        self._config = {}
+        self._config['identifier'] = ''
+        self._config['verbose'] = True
 
     def configure(self):
-        d = ConfigureDialog(self._state, QtGui.QApplication.activeWindow().currentWidget())
-        d.setModal(True)
-        if d.exec_():
-            self._state = d.getState()
-            
-        self._configured = d.validate()
-        if self._configured and self._configuredObserver:
-            self._configuredObserver()
+
+        dlg = ConfigureDialog(self._main_window)
+        dlg.identifierOccursCount = self._identifierOccursCount
+        dlg.setConfig(self._config)
+        dlg.validate()
+        dlg.setModal(True)
+
+        if dlg.exec_():
+            self._config = dlg.getConfig()
+
+        self._configured = dlg.validate()
+        self._configuredObserver()
 
     def execute(self):
 
-        self.measurements = fw_femur_measurements.FemurMeasurements( self.model )
+        self.measurements = fw_femur_measurements.FemurMeasurements(self.model)
         self.measurements.calcMeasurements()
-        
-        # if self._state._verbose:
-        self.measurements.printMeasurements()
-            
+
+        if self._config['verbose']:
+            self.measurements.printMeasurements()
+
         # return m
+        print('measurements done')
         self._doneExecution()
 
     def setPortData(self, index, dataIn):
         if not isinstance(dataIn, geometric_field.geometric_field):
             raise TypeError('FieldViViewFieldworkModelStep expects a geometric_field as input')
-        
+
         self.model = dataIn
 
     def getPortData(self, index):
-        return {'femur measurements':self.measurements.getMeasurementsDict()}
-    
+        print('outputting from FieldworkFemurMeasurementStep')
+        return {'femur measurements': self.measurements}
+
     def getIdentifier(self):
-        return self._state._identifier
-     
+        return self._config['identifier']
+
     def setIdentifier(self, identifier):
-        self._state._identifier = identifier
-     
+        self._config['identifier'] = identifier
+
     def serialize(self):
         '''
-        Add code to serialize this step to string.  This method should
-        implement the opposite of 'deserialize'.
+        Add code to serialize this step to disk. Returns a json string for
+        mapclient to serialise.
         '''
-        return self._state.serialize()
-     
+        return json.dumps(self._config, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
     def deserialize(self, string):
         '''
-        Add code to deserialize this step from string.  This method should
-        implement the opposite of 'serialize'.
+        Add code to deserialize this step from disk. Parses a json string
+        given by mapclient
         '''
-        self._state.deserialize(string)
+        self._config.update(json.loads(string))
 
-        d = ConfigureDialog(self._state)
+        d = ConfigureDialog()
+        d.identifierOccursCount = self._identifierOccursCount
+        d.setConfig(self._config)
         self._configured = d.validate()
-

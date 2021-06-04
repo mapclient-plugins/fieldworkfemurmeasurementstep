@@ -19,12 +19,13 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
 '''
 import json
 
+
 class StepState(object):
     '''
     This class holds the step state, for use with serialization
     /deserialization.
     '''
-    
+
     def __init__(self):
         self._identifier = ''
         self._verbose = True
@@ -34,4 +35,3 @@ class StepState(object):
     
     def deserialize(self, str_rep):
         self.__dict__.update(json.loads(str_rep))
-
