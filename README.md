@@ -3,4 +3,6 @@ fieldworkfemurmeasurementstep
 
 MAP Client plugin for measuring fieldwork femur models.
 
-Requires https://bitbucket.org/jangle/gias and https://bitbucket.org/jangle/fieldwork.
+Requires:
+- GIAS3 - Fieldwork: https://github.com/musculoskeletal/gias3.fieldwork
+- GIAS3 - Musculoskeletal: https://github.com/musculoskeletal/gias3.musculoskeletal

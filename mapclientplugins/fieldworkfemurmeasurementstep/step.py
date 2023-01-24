@@ -17,14 +17,13 @@ This file is part of MAP Client. (http://launchpad.net/mapclient)
     You should have received a copy of the GNU General Public License
     along with MAP Client.  If not, see <http://www.gnu.org/licenses/>..
 '''
-import os
 import json
 
 from mapclient.mountpoints.workflowstep import WorkflowStepMountPoint
 
 from mapclientplugins.fieldworkfemurmeasurementstep.widgets.configuredialog import ConfigureDialog
-from gias2.musculoskeletal import fw_femur_measurements
-from gias2.fieldwork.field import geometric_field
+from gias3.musculoskeletal import fw_femur_measurements
+from gias3.fieldwork.field import geometric_field
 
 
 class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
@@ -78,8 +77,8 @@ class FieldworkFemurMeasurementStep(WorkflowStepMountPoint):
         self._doneExecution()
 
     def setPortData(self, index, dataIn):
-        if not isinstance(dataIn, geometric_field.geometric_field):
-            raise TypeError('FieldViViewFieldworkModelStep expects a geometric_field as input')
+        if not isinstance(dataIn, geometric_field.GeometricField):
+            raise TypeError('FieldViViewFieldworkModelStep expects a GeometricField as input')
 
         self.model = dataIn
 
